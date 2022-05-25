@@ -1,3 +1,6 @@
+const {
+    application
+} = require('express');
 const express = require('express');
 const UserModel = require('../src/models/user.model')
 const app = express();
@@ -5,6 +8,14 @@ const app = express();
 const port = 8080;
 
 app.use(express.json());
+
+// criando middleware
+app.use((req, res, next) => {
+    console.log(`Request Type: ${req.method}`);
+    console.log(`Content Type: ${req.headers["content-type"]}`);
+    console.log(`Date: ${new Data()}`);
+    next();
+});
 
 app.post('/users', async (req, res) => {
 
@@ -20,12 +31,14 @@ app.post('/users', async (req, res) => {
 });
 
 app.patch('/users/:id', async (req, res) => {
-    try{
+    try {
         const id = req.params.id;
-        const userPath = await UserModel.findByIdAndUpdate(id, req.body, {new: true});
+        const userPath = await UserModel.findByIdAndUpdate(id, req.body, {
+            new: true
+        });
         res.status(200).json(userPath)
 
-    } catch (error){
+    } catch (error) {
 
         res.status(500).send(error.message)
 
@@ -33,16 +46,16 @@ app.patch('/users/:id', async (req, res) => {
 });
 
 app.delete('/users/:id', async (req, res) => {
-    try{
+    try {
 
         const id = req.params.id;
         const userDelete = await UserModel.findByIdAndRemove(id);
         res.status(200).json(userDelete);
 
-    } catch (erorr){
+    } catch (erorr) {
         res.status(500).send(error.message)
     }
-})
+});
 
 app.get('/users', async (req, res) => {
     try {
@@ -56,13 +69,13 @@ app.get('/users', async (req, res) => {
 });
 
 app.get('/users/:id', async (req, res) => {
-    try{
+    try {
         const id = req.params.id;
         const userId = await UserModel.findById(id)
         return res.status(200).json(userId);
 
 
-    } catch (error){
+    } catch (error) {
         return res.status(500).send(error.message)
     }
 });
