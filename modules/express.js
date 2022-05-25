@@ -6,11 +6,6 @@ const port = 8080;
 
 app.use(express.json());
 
-app.get('/home', (req, res) => {
-    res.status(200).send("<h1> Home Page </h1>");
-});
-
-
 app.post('/users', async (req, res) => {
 
     try {
@@ -24,25 +19,52 @@ app.post('/users', async (req, res) => {
 
 });
 
-app.get('/users', (req, res) => {
-    // const users = [{
-    //         nome: 'Keila Cardoso',
-    //         email: 'keila_dcardoso@hotmail.com',
-    //     },
-    //     {
-    //         nome: 'Bruna Nascimento',
-    //         email: 'brunaleotec@gmail.com',
-    //     },
-    // ];
+app.patch('/users/:id', async (req, res) => {
+    try{
+        const id = req.params.id;
+        const userPath = await UserModel.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json(userPath)
 
+    } catch (error){
+
+        res.status(500).send(error.message)
+
+    }
+});
+
+app.delete('/users/:id', async (req, res) => {
+    try{
+
+        const id = req.params.id;
+        const userDelete = await UserModel.findByIdAndRemove(id);
+        res.status(200).json(userDelete);
+
+    } catch (erorr){
+        res.status(500).send(error.message)
+    }
+})
+
+app.get('/users', async (req, res) => {
     try {
-        const users = UserModel.find();
-        res.status(200).send().json(users);
+        const users = await UserModel.find({});
+        res.status(200).json(users);
 
     } catch (error) {
         res.status(500).send(error.message);
     }
 
+});
+
+app.get('/users/:id', async (req, res) => {
+    try{
+        const id = req.params.id;
+        const userId = await UserModel.findById(id)
+        return res.status(200).json(userId);
+
+
+    } catch (error){
+        return res.status(500).send(error.message)
+    }
 });
 
 app.listen(port, () => {
