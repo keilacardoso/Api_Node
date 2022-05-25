@@ -1,6 +1,3 @@
-const {
-    application
-} = require('express');
 const express = require('express');
 const UserModel = require('../src/models/user.model')
 const app = express();
@@ -16,6 +13,7 @@ app.use((req, res, next) => {
     console.log(`Date: ${new Data()}`);
     next();
 });
+
 
 app.post('/users', async (req, res) => {
 
